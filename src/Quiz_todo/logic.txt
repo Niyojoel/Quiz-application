@@ -1,0 +1,79 @@
+on next button 
+- go to next question - currInd ++
+- if choice was chosen :
+    update choiceArr:
+        *new choice (!initChoice)
+            questAttempt ++
+            choice === ans - score++ else score
+        *existing choice (initChoice):
+            questAttempt
+            change choice - update the choice using it id (!choiceMatch)
+                choice === ans - score ++ 
+                if choice !== ans & formerChoice === answer score--
+                if choice !== ans & formerChoice !== answer 
+            re-chosen choice - no change (choiceMatch)
+                choice !/=== ans - score
+
+                choice ? choiceArr = [...choiceArr, choiceObj] : choiceArr
+                initChoice = choiceArr.find((choice)=> choice.id === choiceObj.id)
+                choiceMatch = choiceArr.map((choice)=> 
+                    if(choice.id === choiceObj.id) {
+
+                    }
+                )
+
+                if (choice) {
+                    //write conditions for initChoice and choiceMatch
+                    choiceArr = new Set ([...choiceArr, choiceObj])
+                    checkInitChoice = choiceArr.find((choice)=> choice.id === chosenObj.id)
+
+
+                    if(checkInitChoice.chosen !== choiceObj.chosen) {
+                        choiceMatch = false;
+                        checkInitChoice = {...checkInitChoice, oldChoice: checkInitChoice.chosen, chosen: choiceObj.chosen}
+                    }else if (checkInitChoice.chosen === choiceObj.chosen) {
+                        choiceMatch = true: 
+                        return checkInitChoice;  
+                    }
+                    return choice; 
+
+                    const otherChoices = choiceArr.filter(choice=> choice.id !== choiceObj.id)
+
+                    if(checkInitChoice === undefined) {
+                        initChoice = false
+                    }else {initChoice = true}
+
+                    
+                    let ansCorr
+                    if(initChoice) { 
+                        questAttempt
+                        if(choiceMatch) {
+                            score
+                        }else if(!choiceMatch) {
+                            choiceArr = changedChoice
+                            const ansCorrect = state.choiceAns[state.choiceAns.length-1].chosen === state.quiz.questions[state.count.currentIndex].ans || updateChoice.chosen === state.quiz.questions[state.count.currentIndex].ans;
+                            const currChoice = choiceArr. find (choice id  === currInd).chosen
+                            const rightAns = quiz.question[currInd].ans
+
+                            ansCorr = currChoice === rightAns
+                            if(ansCorr) {
+                                score ++
+                            }else if (!ansCorr) {
+                                if(forChoice is right) {
+                                    score--
+                                }return score
+                            }
+
+                        }
+                    }else if (!initChoice) {
+                        update choiceArr
+                        //redefine ansCorr
+                        questAttempt++
+                        if(ansCorr) {
+                            score ++
+                        }return score
+                    }
+                    update choiceArr (whether new choice/existing choice )
+                }return (go to next question - currInd ++)
+
+                write a condition for ansCorr, initChoice, choiceMatch, formerChoice being checked with currChoice.
