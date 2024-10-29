@@ -48,6 +48,10 @@ body, * {
 .inst_box {
     width: fit-content;
     padding: 2rem 3rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     margin: auto;
     background: var(--backgroundgrey);
     height: fit-content;
@@ -55,7 +59,7 @@ body, * {
 }
 
 .inst_box h2 {
-    border-bottom: 3px solid rgba(0,0 ,0,0.1);
+    border-bottom: 2px solid rgba(0,0 ,0,0.1);
     margin-bottom: 1.3rem;
     width: 100%;
     color: rgb(88, 88, 88);
@@ -77,22 +81,38 @@ body, * {
 
 .btn {
     padding: 0 0.7rem;
-    height: 2.1rem;
+    height: 2.2rem;
     align-self: center;
     outline: none;
+    border: none;
     text-wrap: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     color: grey;
-    transition: all 300ms ease-out;
+    transition: all 200ms ease-out;
 }
+
+.btn:hover {
+    color: black;
+}
+
+.start_btn:hover, .start_btn:focus {
+    background-color: rgb(191, 191, 191);
+    outline: none;
+    border: none;
+}
+
 
 
 /* -------QUIZ------------ */
 
 .quiz_box {
-    min-width: 60%;
+    width: 50%;
     background: var(--backgroundgrey);
     height: fit-content;
-    padding: 1.2rem 2rem;
+    padding: 1.2rem 2rem 2rem;
     border-radius: 2px;
     box-shadow: 0px 2px 3px 2px rgb(206, 206, 206);
 }
@@ -117,17 +137,26 @@ body, * {
 }
 
 form {
+ width: 100%;
  display: flex;
  flex-direction: column;
  gap: 1.5rem;
 }
 
 .options {
+    width: 100%;
     list-style-type: none;
 }    
     
 .options li {
+    display: flex;
     padding: 0 1rem;
+    border-bottom: 1px dotted black;
+    padding: 0.5rem;
+}
+
+.options li:hover {
+    color: black;
 }
 
 .options li input {
@@ -135,8 +164,17 @@ form {
     outline: none;
 }
 
-.options li label {
+.options li label   {
+    flex: 1;
     font-size: 1rem;
+
+}
+
+.next_btn span, .prev_btn span {
+    height: max-content;
+    align-self: center;
+    display: flex;
+    align-items: center;
 }
 
 .next_btn:focus {
@@ -165,7 +203,6 @@ form {
 .nav {
     width: 100%;
     display: flex;
-    /* justify-content: space-between; */
 }
 
 .next_btn {

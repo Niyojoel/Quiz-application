@@ -3,7 +3,7 @@ const quizData = [
         no: 1,
         quest:'When was HP Elitebook folio 9470m made ?',
         opt: ['2015','1999','2014','2010'],
-        ans: '2014'
+        ans: '2014',
     },
     {
         no: 2,

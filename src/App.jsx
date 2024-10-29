@@ -1,11 +1,9 @@
 import React, {useReducer, useEffect, useRef} from 'react';
-import {FaTimes, FaTrademark} from 'react-icons/fa';
-import Instructions from './Quiz_todo/Instructions';
-import Quiz from './Quiz_todo/Quiz';
-import Remark from './Quiz_todo/Remark';
-import Submitwarning from './Quiz_todo/Submitwarning';
-import {reducer} from './Quiz_todo/reducer';
-import './Quiz_todo/style.css';
+import Instructions from './components/Instructions';
+import Quiz from './components/Quiz';
+import Remark from './components/Remark';
+import Submitwarning from './components/Submitwarning';
+import {reducer} from './reducer';
 import './app.css'
 
 
@@ -15,7 +13,7 @@ import './app.css'
 const defaultState = {
   pages : {instruct: true, quizRun: false},
   quiz: {questions: [], questionsAttempted: 0},
-  count: {currentIndex: 0, score: 0},
+  count: {currentIndex: 0, score: ""},
   choice:'',
   choiceObj: {}, 
   choiceAns: [], 
@@ -29,26 +27,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, defaultState);
   const timeRef = useRef();
   const inputsRef = useRef();
-  
-  // importing data on hold
-  // const getData = async()=> {
-  //     try {
-  //         const resp = await fetch(url);
-  //         const data = await resp.json(); 
-  //         console.log(data)
-  //         const req = data.map((info)=> {
-  //           const {id, question, correctAnswer, incorrectAnswers} = info;
-  //           return info;
-  //         });
-  //         console.log(req)
-  //     } catch (error) {
-  //           console.log(error);
-  //     }
-  // }
 
-
-  // Save the quiz questions & currentIndex in Local Storage to persist current question on the screen on refresh
-    
   let time = 5 * 60;
   const timeCount=()=> {
     let min = time/ 60;
@@ -59,15 +38,16 @@ function App() {
   setInterval(timeCount, 1000);
   
   const startQuiz = ()=> {
-    dispatch({type: 'QUIZ_START', payload:timeRef});
+    dispatch({type: 'QUIZ_START'});
   }
   
   function onOptionClick (e, no) {
     let name;
     if(e.target.checked === true) {
       name = e.target.nextSibling.innerText;
+      console.log(name);
     }
-    dispatch({type:'INPUT_CHANGE', payload: {chos: name, id:no}});
+    dispatch({type:'INPUT_CHANGE', payload: {optChoice: name, id: no}});
   }
   
   const prevQuestion = ()=> {
@@ -81,9 +61,10 @@ function App() {
   const submitCaution = ()=> {
     dispatch({type:'SUBMIT_CAUTION'})
   }
+
   const syncResp=(e)=> {
     e.preventDefault();
-    dispatch({type:'PROGRESS', payload:{nextQuest: nextQuest,submitCaution: submitCaution}})
+    dispatch({type:'PROGRESS', payload:{nextQuest: nextQuest, submitCaution: submitCaution}})
   }
 
 
@@ -105,8 +86,8 @@ function App() {
       {state.pages.quizRun && <p className='time'>Time remaining: <span ref={timeRef}>5 mins</span></p>}
       <h1 className='backdrop'>Test</h1>
       {state.pages.instruct && <Instructions startQuiz={startQuiz}/>}
-      {state.pages.quizRun && <Quiz {...state} timeRef ={timeRef} prevQuestion={prevQuestion} syncResp={syncResp} onOptionClick={onOptionClick} inputsRef={inputsRef}/>}
-      {state.submit.caution && <Submitwarning {...state}  submitQuiz={submitQuiz} backToTest = {backToTest}/>}
+      {state.pages.quizRun == true && <Quiz {...state} timeRef ={timeRef} prevQuestion={prevQuestion} syncResp={syncResp} onOptionClick={onOptionClick} inputsRef={inputsRef}/>}
+      {state.submit.caution === true && <Submitwarning {...state}  submitQuiz={submitQuiz} backToTest = {backToTest}/>}
       {state.remark && <Remark {...state}/>}
     </main>
   )
