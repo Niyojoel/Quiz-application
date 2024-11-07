@@ -1,6 +1,9 @@
 import React from 'react';
+import {useQuizContext} from "../useQuiz";
 
-const Instructions = ({startQuiz}) => {
+const Instructions = () => {
+  const {startQuiz} = useQuizContext();
+  
   return <article className= 'inst_box'>
       <h2>Instructions</h2>
       <ul className='inst'>

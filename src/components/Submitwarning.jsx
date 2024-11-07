@@ -1,13 +1,22 @@
-import React from 'react'
+import React from 'react';
+import {useQuizContext} from '../useQuiz';
+import "../app.css";
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
-const Submitwarning = ({quiz, submitQuiz, backToTest}) => {
+const Submitwarning = () => {
+  const {state: {quiz}, submitQuiz, backToTest} = useQuizContext();
+  
   return (
-    <div>
+    <div className='submit_box'>
         <h3> You are about to Submit your test... </h3>
-        <p>You answered {quiz?.questionsAttempted} of {quiz?.questions?.length} questions</p>
-        <p>To Successfully Complete the Process Click on the Submit button</p>
-        <button className='go_back' onClick={backToTest}>Go Back</button>
-        <button className="submit_btn" onClick={submitQuiz}> SUBMIT TEST</button>
+        <div>
+          <p>You answered {quiz?.questionsAttempted} of {quiz?.questions?.length} questions</p>
+          <p>To Successfully Complete this Process Click on the Submit button</p>
+        </div>
+        <div className='submitBtns'>
+          <button className='btn go_back' onClick={backToTest}><FaAngleLeft/> Go Back</button>
+          <button className="btn submit_btn" onClick={submitQuiz}> SUBMIT TEST <FaAngleRight/> </button>
+        </div>
     </div>
   )
 }

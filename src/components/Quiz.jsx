@@ -1,15 +1,20 @@
 import React, {useRef, useEffect} from 'react';
+import {useQuizContext} from "../useQuiz";
 import {FaAngleDoubleLeft, FaAngleDoubleRight} from 'react-icons/fa';
 
-const Quiz = ({quiz, count, choice, choiceObj, choiceAns, nextBtnSubmit, timeRef, prevQuestion, onOptionClick, syncResp, submit, inputsRef}) => {
-  const {no, quest, opt}= quiz.questions[count.currentIndex];
+const Quiz = () => {
+  const {state, onOptionClick, syncResp, syncPrevResp, inputsRef} = useQuizContext();
+  const {quiz, pages, count, choice, choiceObj, choiceAns, nextBtnSubmit, submit} = state;
+  const {no, quest, opt}= count.currentIndex <= 9 && quiz.questions[count.currentIndex];
   const nextBtnRef = useRef();
-  let notlastQuestion = count.currentIndex <= quiz.questions.length;
-    
- console.log(choice, choiceAns, quiz.questionsAttempted, count.score, choiceObj, count.currentIndex, submit.caution, quiz?.questions[count.currentIndex])
+  
+  // console.log(count.currentIndex, quiz.questions.length)
+  useEffect(()=> {
+    console.log({choice: choice, choiceAns : choiceAns, questAttempt: quiz.questionsAttempted, score: count.score, choiceObj: choiceObj, currentIndex: count.currentIndex, caution: submit.caution})
+  }, [state])
 
   useEffect(()=> {
-    if (notlastQuestion) {
+    if (count.currentIndex <= 9) {
       const currAns = choiceAns.find((ans)=> ans?.id === count.currentIndex + 1)
       if(currAns !== undefined){
         const ansQuestions = () => {
@@ -31,16 +36,16 @@ const Quiz = ({quiz, count, choice, choiceObj, choiceAns, nextBtnSubmit, timeRef
   }, [count.currentIndex])
 
   return (
-    <section className='quiz_box'>
+    <section className={ count.currentIndex !== quiz.questions.length ? `quiz_box` : `quiz_box quiz_end`}>
       <header>
-        <p className='quest_read'> {count?.currentIndex + 1}/ {quiz?.questions?.length}</p>
+        <p className='quest_read'> {count?.currentIndex + 1}/ {quiz?.questions?.length} </p>
       </header>
       <article className="quiz_body">
-        <h3 className="question"><span>{no}.</span> {quest}</h3>
-        <form>
+        <h3 className="question"><span>{quiz.questions[count?.currentIndex]?.no}.</span> {quest}</h3>
+        <article className='option_box'>
           <ul className="options" ref={inputsRef}> 
           {/* irreversible check of an option choice upon initial check of an option  */}
-            {opt.map((choice, index)=> {
+            {opt?.map((choice, index)=> {
               return <li key={index}>
                   <input type='radio' id={index} name='option' onChange={(e)=> onOptionClick(e, no)} defaultChecked = {false} />
                   <label htmlFor={index}>{choice}</label>
@@ -49,10 +54,10 @@ const Quiz = ({quiz, count, choice, choiceObj, choiceAns, nextBtnSubmit, timeRef
           </ul>
 
           <div className="nav">
-            {count.currentIndex !== 0 && <button className ='btn prev_btn' type='button' onClick={prevQuestion}><span><FaAngleDoubleLeft/></span> Prev.</button>}
-            {<button type='submit' className={`btn next_btn ${nextBtnSubmit && 'submit'} ${choiceObj.id && 'choice'} ${choice && 'next_signal'}`} onClick={syncResp} ref={nextBtnRef}> {nextBtnSubmit ? 'SUBMIT TEST' : 'Next'} <span><FaAngleDoubleRight/></span></button>}
+            {count.currentIndex !== 0 && <button className ='btn prev_btn' type='button' onClick={syncPrevResp}><span><FaAngleDoubleLeft/></span> Prev.</button>}
+            {<button className={`btn next_btn ${nextBtnSubmit && 'submit'} ${choice && "choice"} ${choiceObj.id && 'next_signal'}`} onClick={syncResp} ref={nextBtnRef}> {nextBtnSubmit ? 'SUBMIT TEST' : 'Next'} <span><FaAngleDoubleRight/></span></button>}
           </div>
-        </form>
+        </article>
       </article>
     </section>
   )
