@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import {Instructions, Quiz, Remark, Submitwarning} from './components';
 import './app.css';
 import {useQuizContext} from "./useQuiz";
