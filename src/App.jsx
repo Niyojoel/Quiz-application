@@ -1,27 +1,25 @@
 import { useEffect } from 'react';
-import Instructions from './components/Instructions';
-import Quiz from './components/Quiz';
-import Remark from './components/Remark';
-import Submitwarning from './components/Submitwarning';
+import {Instructions, Quiz, Remark, Submitwarning} from './components';
 import './app.css';
 import {useQuizContext} from "./useQuiz";
+import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 
-
-//const url = 'https://the-trivia-api.com/v2/questions';
 
 function App() { 
-  const {state: {pages, count, submit, remark}, timeRef} = useQuizContext();
-
-  console.log(count);
-
+  const {state: {pages : {instruct, quizRun}, submit: {caution}, remark}, timeCount} = useQuizContext();
+  
   return (
     <main className='container'>
-      {pages.quizRun && <p className='time'>Time remaining: <span ref={timeRef}>5 mins</span></p>}
+      <Router>
+      {!instruct && <p className='time'>Time remaining: <span>{timeCount}</span></p>}
       <h1 className='backdrop'>Test</h1>
-      {pages.instruct && <Instructions/>}
-      {pages.quizRun && <Quiz/>}
-      {submit.caution && <Submitwarning/>}
-      {remark && <Remark/>}
+        <Routes>
+          <Route path="/" element={instruct && <Instructions/>}/>
+          <Route path="/quiz" element={<Quiz/>}/>
+          <Route path="/submitwarning" element={<Submitwarning/>}/>
+          <Route path="/remark" element={ remark && <Remark/>}/>
+        </Routes>
+      </Router>
     </main>
   )
 }

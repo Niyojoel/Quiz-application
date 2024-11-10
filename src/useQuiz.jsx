@@ -1,26 +1,27 @@
-import React, {useReducer, useEffect, useRef, useContext, createContext} from 'react';
+import React, {useReducer, useEffect, useRef, useContext, createContext, useState} from 'react';
 import {reducer} from './reducer';
-
+import data from './data/data';
+import { getTimeRemaining} from './time';
 
 const defaultState = {
   pages : {instruct: true, quizRun: false},
-  quiz: {questions: [], questionsAttempted: 0},
+  quiz: {questions: data, questionsAttempted: 0},
   count: {currentIndex: 0, score: 0},
   choice: "",
   choiceObj: {}, 
   choiceAns: [], 
-  time: 0,
+  time: 0.3,
   submit: {caution: false, test: false},
   remark: false,
   nextBtnSubmit: false,
-  // showCorrAns: false,
 }
 
 const QuizContext = createContext();
 
 export const QuizProvider = ({children}) => {
-  const [state, dispatch] = useReducer(reducer, JSON.parse(sessionStorage.getItem("quizState")) || defaultState);
+  const [state, dispatch] = useReducer(reducer, JSON.parse(localStorage.getItem("quizState")) || defaultState);
   const inputsRef = useRef();
+    const [timeCount, setTimeCount] = useState(state.time < 1 ? `${60 * state.time} sec` : `${state.time} mins`)
   
   const startQuiz = ()=> {
     dispatch({type: 'QUIZ_START'});
@@ -56,8 +57,12 @@ export const QuizProvider = ({children}) => {
     dispatch({type:'BACKTOTEST'})
   }
 
-  const submitQuiz = ()=>{
+  const submitQuiz =()=> {
     dispatch({type:'SUBMIT_QUIZ'})
+  }
+
+  const endTest =()=> {
+    dispatch({type:'SUBMIT_CAUTION'})
   }
 
   const removeRecord = ()=> {
@@ -65,22 +70,42 @@ export const QuizProvider = ({children}) => {
   }
 
   useEffect(()=> {
-    sessionStorage.setItem("quizState", JSON.stringify(state))
+    localStorage.setItem("quizState", JSON.stringify(state))
   }, [state])
 
   useEffect(()=> {
-  let time = 5 * 60;
-  const timeCount=()=> {
-    let min = time/ 60;
-    let sec = time % 60;
-    time--;
-    
-  }
-  setInterval(timeCount, 1000);
-  sessionStorage.removeItem("quizState");
+    // removeRecord();
+    localStorage.removeItem("quizState");
   }, [state.pages.instruct])
 
-  return <QuizContext.Provider value = {{state, inputsRef, submitQuiz, backToTest, syncResp, syncPrevResp, onOptionClick, startQuiz, removeRecord}}>{children}</QuizContext.Provider>
+  useEffect(()=> {
+      if(state.pages.quizRun === true) {
+        let remainingTime = state.time * 60
+        const timeInterval = setInterval(() => {
+          remainingTime--;
+          setTimeCount(getTimeRemaining(remainingTime));
+        }, 1000);
+        return ()=> clearInterval(timeInterval)
+      }
+  }, [state.pages.quizRun])
+
+  useEffect(()=> {
+    timeCount === "00:00" && endTest();
+  }, [timeCount])
+
+  return <QuizContext.Provider value = {{
+    state, 
+    timeCount,
+    inputsRef, 
+    backToTest, 
+    syncResp, 
+    syncPrevResp, 
+    onOptionClick, 
+    startQuiz, 
+    submitQuiz,
+    removeRecord}}>
+      {children}
+    </QuizContext.Provider>
 }
 
 export const useQuizContext = ()=> {

@@ -1,17 +1,24 @@
 import React, {useRef, useEffect} from 'react';
 import {useQuizContext} from "../useQuiz";
 import {FaAngleDoubleLeft, FaAngleDoubleRight} from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Quiz = () => {
   const {state, onOptionClick, syncResp, syncPrevResp, inputsRef} = useQuizContext();
-  const {quiz, pages, count, choice, choiceObj, choiceAns, nextBtnSubmit, submit} = state;
+  const {quiz, count, choice, choiceObj, choiceAns, nextBtnSubmit, submit} = state;
   const {no, quest, opt}= count.currentIndex <= 9 && quiz.questions[count.currentIndex];
   const nextBtnRef = useRef();
+  const navigate = useNavigate();
   
-  // console.log(count.currentIndex, quiz.questions.length)
   useEffect(()=> {
-    console.log({choice: choice, choiceAns : choiceAns, questAttempt: quiz.questionsAttempted, score: count.score, choiceObj: choiceObj, currentIndex: count.currentIndex, caution: submit.caution})
-  }, [state])
+    console.log({choice: choice, 
+      choiceAns : choiceAns, 
+      questAttempt: quiz.questionsAttempted, 
+      score: count.score, 
+      choiceObj: choiceObj, 
+      currentIndex: count.currentIndex
+    })
+  }, [state.count.currentIndex])
 
   useEffect(()=> {
     if (count.currentIndex <= 9) {
@@ -34,9 +41,13 @@ const Quiz = () => {
       };
     }
   }, [count.currentIndex])
+  
+  useEffect(()=> {
+    count.currentIndex === quiz.questions.length ? navigate("/submitwarning") : navigate("/quiz");
+  }, [count.currentIndex, quiz.questions])
 
   return (
-    <section className={ count.currentIndex !== quiz.questions.length ? `quiz_box` : `quiz_box quiz_end`}>
+    <section className={`quiz_box`}>
       <header>
         <p className='quest_read'> {count?.currentIndex + 1}/ {quiz?.questions?.length} </p>
       </header>
@@ -54,8 +65,19 @@ const Quiz = () => {
           </ul>
 
           <div className="nav">
-            {count.currentIndex !== 0 && <button className ='btn prev_btn' type='button' onClick={syncPrevResp}><span><FaAngleDoubleLeft/></span> Prev.</button>}
-            {<button className={`btn next_btn ${nextBtnSubmit && 'submit'} ${choice && "choice"} ${choiceObj.id && 'next_signal'}`} onClick={syncResp} ref={nextBtnRef}> {nextBtnSubmit ? 'SUBMIT TEST' : 'Next'} <span><FaAngleDoubleRight/></span></button>}
+            {count.currentIndex !== 0 && 
+            <button type='button' className ='btn prev_btn' onClick={syncPrevResp}>
+              <span>
+                <FaAngleDoubleLeft/>
+              </span> 
+              Prev.
+            </button>}
+            {<button className={`btn next_btn ${nextBtnSubmit && 'submit'} ${choice && "choice"} ${choiceObj.id && 'next_signal'}`} onClick={syncResp} ref={nextBtnRef}> 
+            {nextBtnSubmit ? 'SUBMIT TEST' : 'Next'} 
+              <span>
+                <FaAngleDoubleRight/>
+              </span>
+            </button>}
           </div>
         </article>
       </article>
