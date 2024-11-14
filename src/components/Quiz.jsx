@@ -1,5 +1,4 @@
 import React, {useRef, useEffect} from 'react';
-import {useQuizContext} from "../useQuiz";
 import {FaAngleDoubleLeft, FaAngleDoubleRight} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,7 +20,7 @@ const Quiz = () => {
   }, [state.count.currentIndex])
 
   useEffect(()=> {
-    if (count.currentIndex <= 9) {
+    if (notlastQuestion) {
       const currAns = choiceAns.find((ans)=> ans?.id === count.currentIndex + 1)
       if(currAns !== undefined){
         const ansQuestions = () => {
@@ -49,14 +48,14 @@ const Quiz = () => {
   return (
     <section className={`quiz_box`}>
       <header>
-        <p className='quest_read'> {count?.currentIndex + 1}/ {quiz?.questions?.length} </p>
+        <p className='quest_read'> {count?.currentIndex + 1}/ {quiz?.questions?.length}</p>
       </header>
       <article className="quiz_body">
-        <h3 className="question"><span>{quiz.questions[count?.currentIndex]?.no}.</span> {quest}</h3>
-        <article className='option_box'>
+        <h3 className="question"><span>{no}.</span> {quest}</h3>
+        <form>
           <ul className="options" ref={inputsRef}> 
           {/* irreversible check of an option choice upon initial check of an option  */}
-            {opt?.map((choice, index)=> {
+            {opt.map((choice, index)=> {
               return <li key={index}>
                   <input type='radio' id={index} name='option' onChange={(e)=> onOptionClick(e, no)} defaultChecked = {false} />
                   <label htmlFor={index}>{choice}</label>
@@ -79,7 +78,7 @@ const Quiz = () => {
               </span>
             </button>}
           </div>
-        </article>
+        </form>
       </article>
     </section>
   )

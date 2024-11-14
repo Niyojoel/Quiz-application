@@ -6,10 +6,8 @@ export function reducer (state, action) {
             return {...state,  pages: {instruct: false, quizRun: true}};
             
         case 'PREV_QUEST':
-            state.choice = state.choiceAns.find(ans => ans.id === state.count.currentIndex) === undefined ? "" : state.choiceAns.find(ans => ans.id === state.count.currentIndex).chosen;
-
             const prevSlide = state.count.currentIndex !== state.quiz.questions.length - 1;  
-            return {...state, count: {...state.count, currentIndex: state.count.currentIndex - 1}, choiceObj: {id:'', chosen:''}, nextBtnSubmit : prevSlide && false}
+            return {...state, count: {...state.count, currentIndex: state.count.currentIndex - 1}, choiceObj: {id:'', chosen:''}, choice: '', nextBtnSubmit : prevSlide && false}
         
         case 'NEXT_QUEST': 
             state.choice = state.choiceAns.find(ans => ans.id === state.count.currentIndex + 2) === undefined ? "" : state.choiceAns.find(ans => ans.id === state.count.currentIndex + 2).chosen;
@@ -38,11 +36,13 @@ export function reducer (state, action) {
             
             return {...state,  
                 count: {...state.count,
-                score: state.choiceAns.filter((ans)=> ans.correct === true).length}, quiz: {...state.quiz, questionsAttempted: answeredQuestion === undefined ? state.quiz.questionsAttempted + 1 : state.quiz.questionsAttempted}
-            }
+                score: state.choiceAns.filter((ans)=> ans.correct === true).length}, quiz: {...state.quiz, questionsAttempted: answeredQuestion === undefined ? state.quiz.questionsAttempted++ : state.quiz.questionsAttempted}, }
+            
             
         case 'INPUT_CHANGE': 
-            return {...state, choice: action.payload?.optChoice, choiceObj: {id: action.payload.id, chosen: action.payload?.optChoice}, nextBtnSubmit : state.count.currentIndex === state.quiz.questions.length - 1 ? true : false, submit: {...state.submit, test: false}}
+            const nextHide = state.count.currentIndex === state.quiz.questions.length - 1;
+            
+            return {...state, choice: action.payload.optChoice, choiceObj: {id: action.payload.id, chosen: action.payload.optChoice}, nextBtnSubmit : nextHide && true, submit: {...state.submit, test: false}}
 
         case 'BACKTOTEST':
             return {...state, choiceObj: {id:'', chosen:''}, pages: {...state.pages, quizRun: true}, submit: {...state.submit, caution: false}, count: {...state.count, currentIndex: state.quiz.questions.length - 1}
